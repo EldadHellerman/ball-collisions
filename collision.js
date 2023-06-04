@@ -1,11 +1,4 @@
-<html>
-<head>
-    <title>Snake</title>
-</head>
-<body>
-<img hidden id="apple" width="10" height="10" src="apple.png">
-<canvas id="canvas" width="1000" height="640"><canvas>
-<script>
+
     var appleIcon = document.getElementById("apple");
     var c;
     var snake, apples;
@@ -106,6 +99,3 @@
     c = document.getElementById("canvas").getContext("2d");
     document.onkeypress = function(e){if(window.event) keyPressed(e.keyCode); else if(e.which) keyPressed(e.keyCode);};
     startGame();
-</script>
-</body>
-</html>
