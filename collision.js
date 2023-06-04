@@ -1,7 +1,7 @@
 const COLORS = ["Black", "White", "Yellow", "Red", "Blue", "Green", "Pink"]
 const FPS = 29.976;
-var width = 700;
-var height = 700;
+var width;
+var height;
 
 class Vector {
     constructor(x, y) {
@@ -17,6 +17,10 @@ class Vector {
         this.x += vector.x;
         this.y += vector.y;
     }
+    //can be used for different functions depending on parameters:
+    // if (arguments.length === 1) {
+    //     s = h.s, v = h.v, h = h.h;
+    // }
 }
 
 class Ball {
@@ -46,34 +50,33 @@ class Ball {
     set_color(c) { this.color = c; }
 }
 
+function random(min, max) {
+    //test!
+    return Math.floor(Math.random() * (max - min - 1) + min + 1);
+}
+
+function random_color(min, max) {
+    return ("#" + random(min, max).toString(16)
+        + random(min, max).toString(16)
+        + random(min, max).toString(16));
+}
+
 function init_balls(number_of_balls) {
     ball_arr = new Array();
     var x = 0;
     var y = 0;
-    for (y = 0; y < number_of_balls; y++) {
-        for (x = 0; x < number_of_balls; x++) {
-            var position = new Vector(x*50, y*50);
-            var speed = new Vector(Math.floor(Math.random() * (15 + 10 + 1)) - 10, Math.floor(Math.random() * (15 + 10 + 1)) - 10);
-            var radius = Math.floor(Math.random() * (15 - 5 + 1)) + 5;
+    // for (i = 0; i < number_of_balls; i++) {
+    for (y = -number_of_balls; y < number_of_balls; y++) {
+        for (x = -number_of_balls; x < number_of_balls; x++) {
+            var position = new Vector(x * 50, y * 50);
+            var speed = new Vector(random(-50, 50), random(-50, 50));
+            var radius = random(10, 30);
             var mass = 1;
-            // var color = COLORS[Math.floor(Math.random() * COLORS.length)];
-            var color = "#" + Math.floor(Math.random() * 16777215).toString(16);
+            var color = random_color(0, 200);
             var ball = new Ball(position, speed, radius, mass, color);
             ball_arr.push(ball);
         }
     }
-    // for (i = 0; i < number_of_balls; i++) {
-    //     var position = new Vector(x, y);
-    //     var speed = new Vector(0, 0);
-    //     var radius = Math.floor(Math.random() * (20 - 10 + 1)) + 10;
-    //     var mass = 1;
-    //     // var color = COLORS[Math.floor(Math.random() * COLORS.length)];
-    //     var color = "#" + Math.floor(Math.random() * 16777215).toString(16);
-    //     var ball = new Ball(position, speed, radius, mass, color);
-    //     ball_arr.push(ball);
-    //     x += 50;
-    //     y += 50;
-    // }
     return (ball_arr);
 }
 
@@ -81,9 +84,9 @@ function convert_canvas_to_position(position) {
     return (new Vector(position.x, position.y));
 }
 
-var scale = 10;
+var scale = 5;
 function convert_position_to_canvas(position) {
-    return (new Vector(position.x / scale + width/2, height - (position.y / scale + height/2)));
+    return (new Vector(position.x / scale + width / 2, height - (position.y / scale + height / 2)));
 }
 
 
@@ -118,12 +121,12 @@ function reset_canvas(canvas_context) {
     canvas_context.clearRect(0, 0, width, height, "white");
 }
 
-function draw(canvas_context, balls){
+function draw(canvas_context, balls) {
     reset_canvas(canvas_context);
     draw_balls(canvas_context, balls);
 }
 
-function iteration(balls, time_step){
+function iteration(balls, time_step) {
     advance_balls(balls, time_step);
 }
 
@@ -132,33 +135,38 @@ var id1 = null;
 var id2 = null;
 
 function main() {
-    if(id1) clearInterval(id1);
-    if(id2) clearInterval(id2);
+    if (id1) clearInterval(id1);
+    if (id2) clearInterval(id2);
     canvas = document.getElementById("canvas");
     canvas_context = canvas.getContext("2d");
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    height = canvas.clientHeight
+    width = canvas.clientWidth;
     canvas.width = width;
     canvas.height = height;
-    document.onkeypress = function (e) { if (window.event) keyPressed(e.keyCode); else if (e.which) keyPressed(e.keyCode); };
-    
-    balls = init_balls(50);
-    var time = 0;
-    var time_step = 0.02;
+    addEventListener("keydown", (event) => { keyPressed(event) });
+    addEventListener("wheel", (event) => { scale += event.deltaY / 500; if (scale < 1) scale = 1; });
+    // document.onkeypress = function (e) { if (window.event) keyPressed(e.keyCode); else if (e.which) keyPressed(e.keyCode); };
+
+    balls = init_balls(10);
+    var time_strech = 0.05;
+    var time_step = 0.01;
 
     id1 = setInterval(draw, 1000 / FPS, canvas_context, balls);
-    id2 = setInterval(advance_balls, time_step * 1000, balls, time_step);
+    id2 = setInterval(advance_balls, time_step * 1000 * time_strech, balls, time_step);
 
 }
 
 
-
-function keyPressed(code) {
-    if (code == 114){
-        main();
+function keyPressed(event) {
+    switch (event.key) {
+        case 'r':
+            main();
+            break;
+        default:
+            break;
     }
-    /*if (code == 119 && currentDirection != "down") direction = "up";
-    else if (code == 115 && currentDirection != "up") direction = "down";
-    else if (code == 100 && currentDirection != "left") direction = "right";
-    else if (code == 97 && currentDirection != "right") direction = "left";*/
 }
 
 /*c.font = "60px Arial";
