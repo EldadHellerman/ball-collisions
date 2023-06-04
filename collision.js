@@ -1,4 +1,6 @@
 const COLORS = ["Black", "White", "Yellow", "Red", "Blue", "Green", "Pink"]
+COLOR_BACKGROUND = "#202020";
+MIN_COLOR_SIMILARITY = 20;
 const FPS = 29.976;
 var width;
 var height;
@@ -55,10 +57,38 @@ function random(min, max) {
     return Math.floor(Math.random() * (max - min - 1) + min + 1);
 }
 
+
+function color(red, green, blue) {
+    return ({
+        r: red,
+        g: green,
+        b: blue
+    });
+}
+
+function string_to_color(color_string) {
+    return ({
+        r: parseInt(color_string.slice(1, 3), 16),
+        g: parseInt(color_string.slice(3, 5), 16),
+        b: parseInt(color_string.slice(5, 7), 16)
+    });
+}
+
+function color_to_string(color) {
+    return ("#" + ("0" + color.r.toString(16)).slice(-2)
+        + ("0" + color.g.toString(16)).slice(-2)
+        + ("0" + color.b.toString(16)).slice(-2));
+}
+
 function random_color(min, max) {
-    return ("#" + random(min, max).toString(16)
-        + random(min, max).toString(16)
-        + random(min, max).toString(16));
+    return color(random(min, max), random(min, max), random(min, max));
+}
+
+function color_difference(color_1, color_2) {
+    var dr = Math.pow(color_1.r - color_2.r,2);
+    var dg = Math.pow(color_1.g - color_2.g,2);
+    var db = Math.pow(color_1.b - color_2.b,2);
+    return Math.sqrt(dr + dg + db);
 }
 
 function init_balls(number_of_balls) {
@@ -69,10 +99,12 @@ function init_balls(number_of_balls) {
     for (y = -number_of_balls; y < number_of_balls; y++) {
         for (x = -number_of_balls; x < number_of_balls; x++) {
             var position = new Vector(x * 50, y * 50);
-            var speed = new Vector(random(-50, 50), random(-50, 50));
+            var speed = new Vector(random(-500, 500), random(-500, 500));
             var radius = random(10, 30);
             var mass = 1;
-            var color = random_color(0, 200);
+            do var color = random_color(0, 200);
+            while (color_difference(color, string_to_color(COLOR_BACKGROUND)) < MIN_COLOR_SIMILARITY);
+            color = color_to_string(color);
             var ball = new Ball(position, speed, radius, mass, color);
             ball_arr.push(ball);
         }
@@ -89,6 +121,17 @@ function convert_position_to_canvas(position) {
     return (new Vector(position.x / scale + width / 2, height - (position.y / scale + height / 2)));
 }
 
+function ball_advance(ball, time) {
+    speed = ball.get_speed()
+    moved = new Vector(speed.x, speed.y);
+    moved.mult(time);
+    ball.get_position().add(moved);
+    // ball.set_position(ball.get_position().add(ball.set_position));
+}
+
+function advance_balls(balls, time_step) {
+    balls.forEach(function (ball) { ball_advance(ball, time_step); })
+}
 
 function draw_ball(canvas_context, ball) {
     var canvas_position = convert_position_to_canvas(ball.get_position());
@@ -101,43 +144,47 @@ function draw_ball(canvas_context, ball) {
     canvas_context.fill();
 }
 
-function ball_advance(ball, time) {
-    speed = ball.get_speed()
-    moved = new Vector(speed.x, speed.y);
-    moved.mult(time);
-    ball.get_position().add(moved);
-    // ball.set_position(ball.get_position().add(ball.set_position));
-}
 
 function draw_balls(canvas_context, balls) {
     balls.forEach(function (ball) { draw_ball(canvas_context, ball); })
 }
 
-function advance_balls(balls, time_step) {
-    balls.forEach(function (ball) { ball_advance(ball, time_step); })
+function draw_time(canvas_context, simulation_time){
+    canvas_context.font = "20px Arial";
+    canvas_context.fillStyle = "White";
+    canvas_context.fillText("Simulation Time: " + (simulation_time.t).toFixed(3), 0, 20);
 }
 
 function reset_canvas(canvas_context) {
     canvas_context.clearRect(0, 0, width, height, "white");
 }
 
-function draw(canvas_context, balls) {
+function draw(canvas_context, balls, simulation_time) {
     reset_canvas(canvas_context);
     draw_balls(canvas_context, balls);
+    draw_time(canvas_context, simulation_time);
 }
 
 function iteration(balls, time_step) {
     advance_balls(balls, time_step);
 }
 
+
 var balls;
 var id1 = null;
 var id2 = null;
 
+function advance_time(time_step, simulation_time, balls){
+    advance_balls(balls, time_step);
+    simulation_time.t += time_step;
+}
+
 function main() {
     if (id1) clearInterval(id1);
     if (id2) clearInterval(id2);
+    document.body.style.backgroundColor = COLOR_BACKGROUND;
     canvas = document.getElementById("canvas");
+    canvas.style.backgroundColor = COLOR_BACKGROUND;
     canvas_context = canvas.getContext("2d");
     canvas.style.width = "100%";
     canvas.style.height = "100%";
@@ -150,11 +197,11 @@ function main() {
     // document.onkeypress = function (e) { if (window.event) keyPressed(e.keyCode); else if (e.which) keyPressed(e.keyCode); };
 
     balls = init_balls(10);
-    var time_strech = 0.05;
+    var time_strech = 10;
     var time_step = 0.01;
-
-    id1 = setInterval(draw, 1000 / FPS, canvas_context, balls);
-    id2 = setInterval(advance_balls, time_step * 1000 * time_strech, balls, time_step);
+    var simulation_time = {t: 0};
+    id1 = setInterval(draw, 1000 / FPS, canvas_context, balls, simulation_time);
+    id2 = setInterval(advance_time, time_step * 1000 * time_strech, time_step, simulation_time, balls);
 
 }
 
