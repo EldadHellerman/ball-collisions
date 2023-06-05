@@ -19,6 +19,9 @@ class Vector {
         this.x += vector.x;
         this.y += vector.y;
     }
+    get_length(){
+        return ((x**2+y**2)**0.5)
+    }
     //can be used for different functions depending on parameters:
     // if (arguments.length === 1) {
     //     s = h.s, v = h.v, h = h.h;
@@ -50,6 +53,13 @@ class Ball {
     set_radius(r) { this.radius = r; }
     set_mass(m) { this.mass = m; }
     set_color(c) { this.color = c; }
+}
+
+function do_collide(ball1, ball2){
+    radii_vector = new Vector(ball1.get_position().x - ball2.get_position().x, ball1.get_position().y - ball2.get_position.y)
+    radii_lengths_sum = ball1.get_radius() + ball2.get_radius();
+    if (radii_vector.length() <= radii_lengths_sum) return true;
+    return false;
 }
 
 function random(min, max) {
