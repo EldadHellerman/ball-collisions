@@ -5,100 +5,12 @@ const FPS = 29.976;
 var width;
 var height;
 
-class Vector {
-    constructor(x, y) {
-        this.x = x;
-        this.y = y;
-    }
-    mult(scalar) {
-        this.x *= scalar;
-        this.y *= scalar;
-    }
-    add(vector) {
-        // vector addition
-        this.x += vector.x;
-        this.y += vector.y;
-    }
-    get_length(){
-        return ((x**2+y**2)**0.5)
-    }
-    //can be used for different functions depending on parameters:
-    // if (arguments.length === 1) {
-    //     s = h.s, v = h.v, h = h.h;
-    // }
-}
-
-class Ball {
-    //x y 
-    //vx, vy
-    //radius
-    //color
-    // get_position().x
-    constructor(position, speed, radius, mass, color) {
-        this.position = position;
-        this.speed = speed;
-        this.radius = radius;
-        this.mass = mass;
-        this.color = color;
-    }
-
-    get_position() { return this.position; }
-    get_speed() { return this.speed; }
-    get_radius() { return this.radius; }
-    get_mass() { return this.mass; }
-    get_color() { return this.color; }
-
-    set_position(vector) { this.position = vector; }
-    set_speed(s) { this.speed = s; }
-    set_radius(r) { this.radius = r; }
-    set_mass(m) { this.mass = m; }
-    set_color(c) { this.color = c; }
-}
 
 function do_collide(ball1, ball2){
     radii_vector = new Vector(ball1.get_position().x - ball2.get_position().x, ball1.get_position().y - ball2.get_position.y)
     radii_lengths_sum = ball1.get_radius() + ball2.get_radius();
     if (radii_vector.length() <= radii_lengths_sum) return true;
     return false;
-}
-
-function random(min, max) {
-    //test!
-    return Math.floor(Math.random() * (max - min - 1) + min + 1);
-}
-
-
-function color(red, green, blue) {
-    return ({
-        r: red,
-        g: green,
-        b: blue
-    });
-}
-
-function string_to_color(color_string) {
-    return ({
-        r: parseInt(color_string.slice(1, 3), 16),
-        g: parseInt(color_string.slice(3, 5), 16),
-        b: parseInt(color_string.slice(5, 7), 16)
-    });
-}
-
-function color_to_string(color) {
-    return ("#" + ("0" + color.r.toString(16)).slice(-2)
-        + ("0" + color.g.toString(16)).slice(-2)
-        + ("0" + color.b.toString(16)).slice(-2));
-}
-
-function random_color(min, max) {
-    return color(random(min, max), random(min, max), random(min, max));
-}
-
-function color_difference(color_1, color_2) {
-    var dr = Math.pow(color_1.r - color_2.r,2);
-    var dg = Math.pow(color_1.g - color_2.g,2);
-    var db = Math.pow(color_1.b - color_2.b,2);
-    return Math.sqrt(dr + dg + db);
 }
 
 function init_balls(number_of_balls) {
@@ -122,27 +34,6 @@ function init_balls(number_of_balls) {
     return (ball_arr);
 }
 
-function convert_canvas_to_position(position) {
-    return (new Vector(position.x, position.y));
-}
-
-var scale = 5;
-function convert_position_to_canvas(position) {
-    return (new Vector(position.x / scale + width / 2, height - (position.y / scale + height / 2)));
-}
-
-function ball_advance(ball, time) {
-    speed = ball.get_speed()
-    moved = new Vector(speed.x, speed.y);
-    moved.mult(time);
-    ball.get_position().add(moved);
-    // ball.set_position(ball.get_position().add(ball.set_position));
-}
-
-function advance_balls(balls, time_step) {
-    balls.forEach(function (ball) { ball_advance(ball, time_step); })
-}
-
 function draw_ball(canvas_context, ball) {
     var canvas_position = convert_position_to_canvas(ball.get_position());
     var radius = ball.get_radius() / scale;
@@ -153,7 +44,6 @@ function draw_ball(canvas_context, ball) {
     canvas_context.ellipse(canvas_position.x, canvas_position.y, radius, radius, 0, 0, 2 * Math.PI);
     canvas_context.fill();
 }
-
 
 function draw_balls(canvas_context, balls) {
     balls.forEach(function (ball) { draw_ball(canvas_context, ball); })
@@ -207,7 +97,7 @@ function main() {
     // document.onkeypress = function (e) { if (window.event) keyPressed(e.keyCode); else if (e.which) keyPressed(e.keyCode); };
 
     balls = init_balls(10);
-    var time_strech = 10;
+    var time_strech = 1;
     var time_step = 0.01;
     var simulation_time = {t: 0};
     id1 = setInterval(draw, 1000 / FPS, canvas_context, balls, simulation_time);
