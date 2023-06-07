@@ -6,13 +6,6 @@ var width;
 var height;
 
 
-function do_collide(ball1, ball2){
-    radii_vector = new Vector(ball1.get_position().x - ball2.get_position().x, ball1.get_position().y - ball2.get_position.y)
-    radii_lengths_sum = ball1.get_radius() + ball2.get_radius();
-    if (radii_vector.length() <= radii_lengths_sum) return true;
-    return false;
-}
-
 function init_balls(number_of_balls) {
     ball_arr = new Array();
     var x = 0;
@@ -34,19 +27,18 @@ function init_balls(number_of_balls) {
     return (ball_arr);
 }
 
-function draw_ball(canvas_context, ball) {
-    var canvas_position = convert_position_to_canvas(ball.get_position());
-    var radius = ball.get_radius() / scale;
-    var color = ball.get_color();
-
-    canvas_context.fillStyle = color;
-    canvas_context.beginPath();
-    canvas_context.ellipse(canvas_position.x, canvas_position.y, radius, radius, 0, 0, 2 * Math.PI);
-    canvas_context.fill();
-}
-
 function draw_balls(canvas_context, balls) {
-    balls.forEach(function (ball) { draw_ball(canvas_context, ball); })
+    // balls.for_each_ball(function (ball) {
+    balls.forEach(function (ball) {
+        var canvas_position = convert_position_to_canvas(ball.get_position());
+        var radius = ball.get_radius() / scale;
+        var color = ball.get_color();
+
+        canvas_context.fillStyle = color;
+        canvas_context.beginPath();
+        canvas_context.ellipse(canvas_position.x, canvas_position.y, radius, radius, 0, 0, 2 * Math.PI);
+        canvas_context.fill();
+    })
 }
 
 function draw_time(canvas_context, simulation_time){
@@ -65,20 +57,22 @@ function draw(canvas_context, balls, simulation_time) {
     draw_time(canvas_context, simulation_time);
 }
 
-function iteration(balls, time_step) {
-    advance_balls(balls, time_step);
-}
 
+
+function advance_simulation(time_step, simulation_time, balls){
+    advance_balls(balls, time_step);
+    simulation_time.t += time_step;
+}
 
 var balls;
 var id1 = null;
 var id2 = null;
 
-function advance_time(time_step, simulation_time, balls){
-    advance_balls(balls, time_step);
-    simulation_time.t += time_step;
-}
-
+/*
+if mouse event are on ball, send it to the balls
+if on simulation timing toolbar, send to it
+if not, send to viewport.
+*/
 function main() {
     if (id1) clearInterval(id1);
     if (id2) clearInterval(id2);
@@ -101,10 +95,9 @@ function main() {
     var time_step = 0.01;
     var simulation_time = {t: 0};
     id1 = setInterval(draw, 1000 / FPS, canvas_context, balls, simulation_time);
-    id2 = setInterval(advance_time, time_step * 1000 * time_strech, time_step, simulation_time, balls);
+    id2 = setInterval(advance_simulation, time_step * 1000 * time_strech, time_step, simulation_time, balls);
 
 }
-
 
 function keyPressed(event) {
     switch (event.key) {
@@ -115,9 +108,3 @@ function keyPressed(event) {
             break;
     }
 }
-
-/*c.font = "60px Arial";
-c.fillStyle = "black";
-c.fillText("Game Over!", 450, 280);
-
-*/

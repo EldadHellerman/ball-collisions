@@ -1,6 +1,8 @@
 class Viewport{
-    //everything related to translating position and time to canvas.
-
+    //everything related to translating position to canvas.
+    //  set physical dimensions, possibly without limits
+    //  set screen dimensions, onto which world is mapped
+    //  recieve mouse events to move and zoom the viewport
 }
 
 

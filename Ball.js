@@ -1,4 +1,9 @@
 class Ball {
+    /*
+    add option to recieve mouse event to grow and shrink ball, ad mouse, change color, and what not.
+    even have an event to kill the ball, to which a subscriber (BallsVx) is needed to listen to.
+    that way a ball can be shranken out of existence or ctrl+clicked to remove.
+    */
     //x y 
     //vx, vy
     //radius
