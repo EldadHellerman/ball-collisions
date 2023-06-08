@@ -28,4 +28,23 @@ class Ball {
     set_radius(r) { this.radius = r; }
     set_mass(m) { this.mass = m; }
     set_color(c) { this.color = c; }
+
+    static check_collided_old(ball1, ball2) {
+        radii_vector = new Vector(ball1.get_position().x - ball2.get_position().x, ball1.get_position().y - ball2.get_position().y)
+        radii_lengths_sum = ball1.get_radius() + ball2.get_radius();
+        if (radii_vector.length() <= radii_lengths_sum) return true;
+        return false;
+    }
+
+    static check_collided(ball1, ball2) {
+        var radial_vector = new Vector(ball2.get_position())
+        radial_vector.sub(ball1.get_position())
+        return(radial_vector.get_length() <= ball1.get_radius() + ball2.get_radius());
+    }
+
+    static collide(ball_1, ball_2) {
+        var tmp = ball_1.color
+        ball_1.color = ball_2.color;
+        ball_2.color = tmp;
+    }
 }
