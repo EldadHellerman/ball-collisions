@@ -41,6 +41,9 @@ class Ball {
         var flip_x = (p.x < -2000) || (p.x > 2000);
         var flip_y = (p.y < -2000) || (p.y > 2000);
         ball.get_speed().mult(flip_x ? -1 : 1, flip_y ? -1 : 1);
+        if(flip_x || flip_y){
+            ball.color = color_from_rgb(255,255,255);
+        }
     }
 
     static check_collided(ball_1, ball_2) {
