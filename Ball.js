@@ -36,10 +36,17 @@ class Ball {
         return false;
     }
 
-    static check_collided(ball1, ball2) {
-        var radial_vector = new Vector(ball2.get_position())
-        radial_vector.sub(ball1.get_position())
-        return(radial_vector.get_length() <= ball1.get_radius() + ball2.get_radius());
+    static check_and_collided_wall(ball) {
+        var p = ball.get_position();
+        var flip_x = (p.x < -2000) || (p.x > 2000);
+        var flip_y = (p.y < -2000) || (p.y > 2000);
+        ball.get_speed().mult(flip_x ? -1 : 1, flip_y ? -1 : 1);
+    }
+
+    static check_collided(ball_1, ball_2) {
+        var radial_vector = new Vector(ball_2.get_position())
+        radial_vector.sub(ball_1.get_position())
+        return(radial_vector.get_length() <= ball_1.get_radius() + ball_2.get_radius());
     }
 
     static collide(ball_1, ball_2) {

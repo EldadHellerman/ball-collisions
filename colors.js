@@ -34,9 +34,9 @@ function color_random(min, max) {
 }
 
 function color_random_not_similar(color, threshold){
-    do var color_random = color_random(0, 200);
-    while (color_difference(color_random, color) < threshold);
-    return color_random;
+    do var c = color_random(0, 200);
+    while (color_difference(c, color) < threshold);
+    return c;
 }
 
 function color_negative(c){

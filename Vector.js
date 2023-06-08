@@ -10,9 +10,14 @@ class Vector {
         }
     }
 
-    mult(scalar) {
-        this.x *= scalar;
-        this.y *= scalar;
+    mult(scalar_1, scalar_2) {
+        if(arguments.length === 1){
+            this.x *= scalar_1;
+            this.y *= scalar_1;
+        }else{
+            this.x *= scalar_1;
+            this.y *= scalar_2;
+        }
     }
     
     add(vector) {
