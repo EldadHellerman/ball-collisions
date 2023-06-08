@@ -18,6 +18,7 @@ function init_balls(number_of_balls) {
             var radius = random(10, 30);
             var mass = 1;
             var color = color_random_not_similar(COLOR_BACKGROUND, MIN_COLOR_SIMILARITY);
+            // var color = (y > 0) ? color_from_rgb(255, 0, 255) : color_from_rgb(50, 255, 0);
             var ball = new Ball(position, speed, radius, mass, color);
             ball_arr.push(ball);
         }

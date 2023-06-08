@@ -1,5 +1,5 @@
 
-function color(red, green, blue) {
+function color_from_rgb(red, green, blue) {
     return ({
         r: red,
         g: green,
@@ -30,15 +30,15 @@ function color_difference(color_1, color_2) {
 }
 
 function color_random(min, max) {
-    return color(random(min, max), random(min, max), random(min, max));
+    return color_from_rgb(random(min, max), random(min, max), random(min, max));
 }
 
-function color_random_not_similar(color_1, threshold){
-    do var color = color_random(0, 200);
-    while (color_difference(color, color_1) < threshold);
-    return color;
+function color_random_not_similar(color, threshold){
+    do var color_random = color_random(0, 200);
+    while (color_difference(color_random, color) < threshold);
+    return color_random;
 }
 
 function color_negative(c){
-    return(color(255-c.r, 255-c.g, 255-c.b));
+    return(color_from_rgb(255-c.r, 255-c.g, 255-c.b));
 }
