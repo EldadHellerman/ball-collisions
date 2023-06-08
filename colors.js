@@ -21,13 +21,24 @@ function color_to_string(color) {
         + ("0" + color.b.toString(16)).slice(-2));
 }
 
-function random_color(min, max) {
-    return color(random(min, max), random(min, max), random(min, max));
-}
 
 function color_difference(color_1, color_2) {
     var dr = Math.pow(color_1.r - color_2.r,2);
     var dg = Math.pow(color_1.g - color_2.g,2);
     var db = Math.pow(color_1.b - color_2.b,2);
     return Math.sqrt(dr + dg + db);
+}
+
+function color_random(min, max) {
+    return color(random(min, max), random(min, max), random(min, max));
+}
+
+function color_random_not_similar(color_1, threshold){
+    do var color = color_random(0, 200);
+    while (color_difference(color, color_1) < threshold);
+    return color;
+}
+
+function color_negative(c){
+    return(color(255-c.r, 255-c.g, 255-c.b));
 }
