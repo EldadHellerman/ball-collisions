@@ -53,8 +53,22 @@ class Ball {
     }
 
     static collide(ball_1, ball_2) {
-        var tmp = ball_1.color
-        ball_1.color = ball_2.color;
-        ball_2.color = tmp;
+        // elastic collision equations:
+        // https://en.wikipedia.org/wiki/Elastic_collision#Two-dimensional_collision_with_two_moving_objects
+        var m1 = ball_1.get_mass();
+        var m2 = ball_2.get_mass();
+        var v1 = new Vector(ball_1.get_speed());
+        v1.sub(ball_2.get_speed());
+        var x1 = new Vector(ball_1.get_position());
+        x1.sub(ball_2.get_position());
+        var length = x1.get_length() ** 2;
+        
+        x1.mult(2 * v1.scalar_product(x1));
+        x1.div(length * (m1 + m2));
+        var x2 = new Vector(x1);
+        x1.mult(-m2);
+        x2.mult(m1);
+        ball_1.get_speed().add(x1)
+        ball_2.get_speed().add(x2)
     }
 }

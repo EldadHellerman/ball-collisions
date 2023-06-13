@@ -20,6 +20,14 @@ class Vector {
         }
     }
     
+    scalar_product(vec){
+        return((this.x * vec.x) + (this.y * vec.y))
+    }
+
+    div(scalar){
+        this.mult(1/scalar);
+    }
+
     add(vector) {
         // vector addition
         this.x += vector.x;

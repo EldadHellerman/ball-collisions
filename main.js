@@ -1,7 +1,7 @@
 const COLORS = ["Black", "White", "Yellow", "Red", "Blue", "Green", "Pink"]
 COLOR_BACKGROUND = "#202020";
 MIN_COLOR_SIMILARITY = 20;
-const FPS = 29.976;
+const FPS = 25;
 var width;
 var height;
 
@@ -16,7 +16,7 @@ function init_balls(number_of_balls) {
             var position = new Vector(x * 70, y * 70);
             var speed = new Vector(random(-500, 500), random(-500, 500));
             var radius = random(10, 30);
-            var mass = 1;
+            var mass = radius; //random(10, 30);
             var color = color_random_not_similar(COLOR_BACKGROUND, MIN_COLOR_SIMILARITY);
             // var color = (y > 0) ? color_from_rgb(255, 0, 255) : color_from_rgb(50, 255, 0);
             var ball = new Ball(position, speed, radius, mass, color);
@@ -91,9 +91,9 @@ function main() {
     canvas.addEventListener("wheel", canvas_wheel);
     canvas.addEventListener("click", canvas_click);
     
-    balls_v1 = new BallsV1(init_balls(20));
+    balls_v1 = new BallsV1(init_balls(10));
     var time_strech = 1;
-    var time_step = 0.01;
+    var time_step = 0.001;
     var simulation_time = {t: 0};
     
     id1 = setInterval(draw, 1000 / FPS, canvas_context, balls_v1, simulation_time);
