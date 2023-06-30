@@ -37,9 +37,9 @@ class Ball {
     }
 
     static check_and_collided_wall(ball) {
-        var p = ball.get_position();
-        var flip_x = (p.x < -2000) || (p.x > 2000);
-        var flip_y = (p.y < -2000) || (p.y > 2000);
+        let p = ball.get_position();
+        let flip_x = (p.x < -2000) || (p.x > 2000);
+        let flip_y = (p.y < -2000) || (p.y > 2000);
         ball.get_speed().mult(flip_x ? -1 : 1, flip_y ? -1 : 1);
         if(flip_x || flip_y){
             ball.color = color_from_rgb(255,255,255);
@@ -47,7 +47,7 @@ class Ball {
     }
 
     static check_collided(ball_1, ball_2) {
-        var radial_vector = new Vector(ball_2.get_position())
+        let radial_vector = new Vector(ball_2.get_position())
         radial_vector.sub(ball_1.get_position())
         return(radial_vector.get_length() <= ball_1.get_radius() + ball_2.get_radius());
     }
@@ -55,17 +55,17 @@ class Ball {
     static collide(ball_1, ball_2) {
         // elastic collision equations:
         // https://en.wikipedia.org/wiki/Elastic_collision#Two-dimensional_collision_with_two_moving_objects
-        var m1 = ball_1.get_mass();
-        var m2 = ball_2.get_mass();
-        var v1 = new Vector(ball_1.get_speed());
+        let m1 = ball_1.get_mass();
+        let m2 = ball_2.get_mass();
+        let v1 = new Vector(ball_1.get_speed());
         v1.sub(ball_2.get_speed());
-        var x1 = new Vector(ball_1.get_position());
+        let x1 = new Vector(ball_1.get_position());
         x1.sub(ball_2.get_position());
-        var length = x1.get_length() ** 2;
+        let length = x1.get_length() ** 2;
         
         x1.mult(2 * v1.scalar_product(x1));
         x1.div(length * (m1 + m2));
-        var x2 = new Vector(x1);
+        let x2 = new Vector(x1);
         x1.mult(-m2);
         x2.mult(m1);
         ball_1.get_speed().add(x1)

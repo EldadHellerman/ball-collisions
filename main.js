@@ -2,24 +2,24 @@ const COLORS = ["Black", "White", "Yellow", "Red", "Blue", "Green", "Pink"]
 COLOR_BACKGROUND = "#202020";
 MIN_COLOR_SIMILARITY = 20;
 const FPS = 25;
-var width;
-var height;
+let width;
+let height;
 
 
 function init_balls(number_of_balls) {
     ball_arr = new Array();
-    var x = 0;
-    var y = 0;
+    let x = 0;
+    let y = 0;
     // for (i = 0; i < number_of_balls; i++) {
     for (y = -number_of_balls; y < number_of_balls; y++) {
         for (x = -number_of_balls; x < number_of_balls; x++) {
-            var position = new Vector(x * 70, y * 70);
-            var speed = new Vector(random(-500, 500), random(-500, 500));
-            var radius = random(10, 30);
-            var mass = radius; //random(10, 30);
-            var color = color_random_not_similar(COLOR_BACKGROUND, MIN_COLOR_SIMILARITY);
-            // var color = (y > 0) ? color_from_rgb(255, 0, 255) : color_from_rgb(50, 255, 0);
-            var ball = new Ball(position, speed, radius, mass, color);
+            let position = new Vector(x * 70, y * 70);
+            let speed = new Vector(random(-500, 500), random(-500, 500));
+            let radius = random(10, 30);
+            let mass = radius; //random(10, 30);
+            let color = color_random_not_similar(COLOR_BACKGROUND, MIN_COLOR_SIMILARITY);
+            // let color = (y > 0) ? color_from_rgb(255, 0, 255) : color_from_rgb(50, 255, 0);
+            let ball = new Ball(position, speed, radius, mass, color);
             ball_arr.push(ball);
         }
     }
@@ -35,9 +35,9 @@ function draw_clear(canvas_context) {
 function draw_balls(canvas_context, balls) {
     //TODO: optimize draw balls. dont draw balls outside of viewport.
     balls.for_each_ball(function (ball) {
-        var canvas_position = convert_position_to_canvas(ball.get_position());
-        var radius = ball.get_radius() / scale;
-        var color = ball.get_color();
+        let canvas_position = convert_position_to_canvas(ball.get_position());
+        let radius = ball.get_radius() / scale;
+        let color = ball.get_color();
         // console.log(ball);
         canvas_context.fillStyle = color_to_string(color);
         canvas_context.beginPath();
@@ -61,13 +61,14 @@ function draw(canvas_context, balls, simulation_time) {
 function advance_simulation(time_step, simulation_time, balls){
     if (frozen) return;
     balls.advance(time_step);
-    balls.check_collisions();
+    // balls.check_collisions();
+    balls.check_collisions_using_location_table();
     simulation_time.t += time_step;
 }
 
-var id1 = null;
-var id2 = null;
-var frozen = false;
+let id1 = null;
+let id2 = null;
+let frozen = false;
 
 /*
 if mouse event are on ball, send it to the balls
@@ -92,9 +93,10 @@ function main() {
     canvas.addEventListener("click", canvas_click);
     
     balls_v1 = new BallsV1(init_balls(10));
-    var time_strech = 1;
-    var time_step = 0.001;
-    var simulation_time = {t: 0};
+    balls_v1.location_map_create(10);
+    let time_strech = 1;
+    let time_step = 0.001;
+    let simulation_time = {t: 0};
     
     id1 = setInterval(draw, 1000 / FPS, canvas_context, balls_v1, simulation_time);
     id2 = setInterval(advance_simulation, time_step * 1000 * time_strech, time_step, simulation_time, balls_v1);

@@ -23,9 +23,9 @@ function color_to_string(color) {
 
 
 function color_difference(color_1, color_2) {
-    var dr = Math.pow(color_1.r - color_2.r,2);
-    var dg = Math.pow(color_1.g - color_2.g,2);
-    var db = Math.pow(color_1.b - color_2.b,2);
+    let dr = Math.pow(color_1.r - color_2.r,2);
+    let dg = Math.pow(color_1.g - color_2.g,2);
+    let db = Math.pow(color_1.b - color_2.b,2);
     return Math.sqrt(dr + dg + db);
 }
 
@@ -34,7 +34,8 @@ function color_random(min, max) {
 }
 
 function color_random_not_similar(color, threshold){
-    do var c = color_random(0, 200);
+    let c;
+    do c = color_random(0, 200);
     while (color_difference(c, color) < threshold);
     return c;
 }
